@@ -1,0 +1,9 @@
+# pre-commit
+resuse commit which contains "//\W*TEST"
+
+# post-commit
+parse changes in build.gradle, create tag if found special format
+    public_version/66
+    crash_version/110141
+    app_version_name/2.4.07
+    app_version/33
