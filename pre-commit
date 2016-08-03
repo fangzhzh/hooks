@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# An example hook script to verify what is about to be committed.
+# Called by "git commit" with no arguments.  The hook should
+# exit with non-zero status after issuing an appropriate message if
+# it wants to stop the commit.
+#
+# To enable this hook, rename this file to "pre-commit".
+
+notify(){
+    terminal-notifier -message "$1" -title "break commit rule"
+}
+
+test=$(git diff --cached | grep -E "//\W*TEST" | wc -l)
+if [ "$test" -gt 0 ] 
+then
+    echo ""
+    echo ""
+    echo ""
+    echo ""
+    echo "don't commit test code, darling"
+    notify "don't commit test code, darling"
+    exit 1
+fi
+
+test=$(git diff | grep -E "//\W*TEST" | wc -l)
+if [ "$test" -gt 0 ] 
+then
+    echo ""
+    echo ""
+    echo ""
+    echo ""
+    echo "don't commit test code, darling"
+    notify "don't commit test code, darling"
+    exit 1
+fi

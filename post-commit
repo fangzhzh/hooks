@@ -1,0 +1,42 @@
+#!/bin/sh
+which terminal-notifier
+if [ $? == 1 ]
+then
+    /usr/local/bin/brew  install terminal-notifier 
+fi
+cd ~/android/shopee
+notify(){
+    # terminal-notifier -message "Find version change, add tag $1" -title "Find version change" -appIcon "http://shopee.sg/static/images/appLogo.png"
+    terminal-notifier -message "Find version change, add tag $1" -title "Find version change"
+}
+
+APP_VERSION=`git diff  HEAD~1 app/build.gradle | grep "+def appVersion\ =" | grep -Eo '[0-9]+'`
+if [ $? -eq 0 ]
+then
+    notify "app_version/$APP_VERSION"
+    git tag "app_version/$APP_VERSION"
+fi
+APP_VERSION_NAME=`git diff  HEAD~1 app/build.gradle | grep "+def appVersionName\ =" | grep -Eo '[0-9.]+'`
+if [ $? -eq 0 ]
+then
+    notify "app_version_name/$APP_VERSION_NAME"
+    git tag "app_version_name/$APP_VERSION_NAME"
+fi
+CRASH_VERSION=`git diff  HEAD~1 app/build.gradle | grep "+def crashVersion\ =" | grep -Eo '[0-9]+'`
+if [ $? -eq 0 ]
+then
+    notify "crash_version/$CRASH_VERSION"
+    git tag "crash_version/$CRASH_VERSION"
+fi
+PUBLIC_VERSION=`git diff  HEAD~1 app/build.gradle | grep "+def forPublic\ =" | awk {'print $4'}`
+if [ $? -eq 0 ]
+then
+    echo $PUBLIC_VERSION
+    if [ "$PUBLIC_VERSION" == "'true'" ]
+    then
+        notify "public_version/$APP_VERSION"
+        git tag "public_version/$APP_VERSION"
+    fi
+fi
+# terminal-notifier -message "Checking version change..." -title "Check Version change"
+
